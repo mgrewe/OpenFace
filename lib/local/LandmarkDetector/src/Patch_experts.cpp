@@ -211,8 +211,12 @@ void Patch_experts::Response(std::vector<cv::Mat_<float> >& patch_expert_respons
 	std::vector<int> vis_lmk = Collect_visible_landmarks(visibilities, scale, view_id, n);
 
 	// calculate the patch responses for every landmark (this is the heavy lifting of landmark detection)
-	parallel_for_(cv::Range(0, vis_lmk.size()), [&](const cv::Range& range) {
-		for (int i = range.start; i < range.end; i++)
+
+	// Parallelism removed due to an issue with OpenMP-enabled openblas >= 0.3.11
+	// See https://github.com/TadasBaltrusaitis/OpenFace/issues/922
+
+	// parallel_for_(cv::Range(0, vis_lmk.size()), [&](const cv::Range& range) {
+		for (int i = 0; i < vis_lmk.size(); i++)
 		{
 
 			// Work out how big the area of interest has to be to get a response of window size
@@ -333,7 +337,7 @@ void Patch_experts::Response(std::vector<cv::Mat_<float> >& patch_expert_respons
 				svr_expert_intensity[scale][view_id][ind].Response(area_of_interest, patch_expert_responses[ind]);
 			}
 		}
-	});
+	// });
 }
 
 
