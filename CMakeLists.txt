@@ -1,5 +1,6 @@
 cmake_minimum_required (VERSION 3.8)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 project(OpenFace VERSION 2.0.2)
 
@@ -245,3 +246,4 @@ add_subdirectory(exe/FaceLandmarkImg)
 add_subdirectory(exe/FaceLandmarkVid)
 add_subdirectory(exe/FaceLandmarkVidMulti)
 add_subdirectory(exe/FeatureExtraction)
+add_subdirectory(exe/FeatureExtractionPython)
