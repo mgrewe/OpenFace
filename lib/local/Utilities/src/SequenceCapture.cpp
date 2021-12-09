@@ -227,8 +227,11 @@ bool SequenceCapture::OpenWebcam(int device, int image_width, int image_height, 
 
 	vid_length = 0;
 
-	this->frame_width = (int)capture.get(cv::CAP_PROP_FRAME_WIDTH);
-	this->frame_height = (int)capture.get(cv::CAP_PROP_FRAME_HEIGHT);
+	// For some reason, size is set correctly, but opencv delivers old values!
+	// TODO: THIS IS A HACK. Change it to a reliable solution
+	this->frame_width = image_width;	// (int)capture.get(cv::CAP_PROP_FRAME_WIDTH);
+	this->frame_height = image_height;	// (int)capture.get(cv::CAP_PROP_FRAME_HEIGHT);
+
 
 	if (!capture.isOpened())
 	{
@@ -362,8 +365,8 @@ bool SequenceCapture::OpenImageSequence(std::string directory, float fx, float f
 
 	for (std::vector<fs::path>::const_iterator file_iterator(file_in_directory.begin()); file_iterator != file_in_directory.end(); ++file_iterator)
 	{
-		// Possible image extension .jpg and .png
-		if (file_iterator->extension().string().compare(".jpg") == 0 || file_iterator->extension().string().compare(".jpeg") == 0  || file_iterator->extension().string().compare(".png") == 0 || file_iterator->extension().string().compare(".bmp") == 0)
+		// load all images that can be loaded by OpenCV
+		if (cv::haveImageReader(file_iterator->string()))
 		{
 			curr_dir_files.push_back(file_iterator->string());
 		}

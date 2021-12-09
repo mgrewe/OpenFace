@@ -227,8 +227,8 @@ bool ImageCapture::OpenDirectory(std::string directory, std::string bbox_directo
 
 	for (std::vector<fs::path>::const_iterator file_iterator(file_in_directory.begin()); file_iterator != file_in_directory.end(); ++file_iterator)
 	{
-		// Possible image extension .jpg and .png
-		if (file_iterator->extension().string().compare(".jpg") == 0 || file_iterator->extension().string().compare(".jpeg") == 0 || file_iterator->extension().string().compare(".png") == 0 || file_iterator->extension().string().compare(".bmp") == 0)
+		// load all images that can be loaded by OpenCV
+		if (cv::haveImageReader(file_iterator->string()))
 		{
 			curr_dir_files.push_back(file_iterator->string());
 
