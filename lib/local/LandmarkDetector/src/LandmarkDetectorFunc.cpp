@@ -181,7 +181,7 @@ void CorrectGlobalParametersVideo(const cv::Mat_<uchar> &grayscale_image, CLNF& 
 
 	float scaling = params.face_template_scale / clnf_model.params_global[0];
 	cv::Mat_<uchar> image;
-	if(scaling < 1)
+	if(scaling < 1 && clnf_model.face_template.rows * scaling >= 1 && clnf_model.face_template.cols * scaling >= 1)
 	{
 		cv::resize(clnf_model.face_template, clnf_model.face_template, cv::Size(), scaling, scaling);
 		cv::resize(grayscale_image(roi), image, cv::Size(), scaling, scaling);
