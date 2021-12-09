@@ -14,21 +14,17 @@ add_definitions(-DCONFIG_DIR="${CONFIG_DIR}")
 
 # make sure we'll use OpenBLAS only: there's a header file naming difference between different
 # implementations; so OpenFace wants OpenBLAS;
-find_package(OpenBLAS REQUIRED)
-if ( ${OpenBLAS_FOUND} )
-    MESSAGE("OpenBLAS information:")
-    MESSAGE("  OpenBLAS_LIBRARIES: ${OpenBLAS_LIB}")
+set(BLA_VENDOR OpenBLAS)
+find_package(BLAS REQUIRED)
+if ( ${BLAS_FOUND} )
+    MESSAGE("BLAS information:")
+    MESSAGE("  BLAS_LIBRARIES: ${BLAS_LIBRARIES}")
 else()
     MESSAGE(FATAL_ERROR "OpenBLAS not found in the system.")
 endif()
-
-if ( ${OpenBLAS_INCLUDE_FOUND} )
-    MESSAGE("  OpenBLAS_INCLUDE: ${OpenBLAS_INCLUDE_DIR}")
-else()
-    MESSAGE(WARNING "OpenBLAS include not found in the system. Using the one vended with OpenFace.")
-	set(OpenBLAS_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/lib/3rdParty/OpenBLAS/include")
-    MESSAGE("  OpenBLAS_INCLUDE: ${OpenBLAS_INCLUDE_DIR}")
-endif()
+# FindBLAS does not look for include so use the one vended with OpenFace
+set(BLAS_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/lib/3rdParty/OpenBLAS/include")
+MESSAGE("  BLAS_INCLUDE: ${BLAS_INCLUDE_DIR}")
 
 find_package( OpenCV 4.0 REQUIRED COMPONENTS core imgproc calib3d highgui objdetect)
 if(${OpenCV_FOUND})
