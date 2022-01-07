@@ -13,18 +13,32 @@ set(CONFIG_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_CONFIG_DIR}")
 add_definitions(-DCONFIG_DIR="${CONFIG_DIR}")
 
 # make sure we'll use OpenBLAS only: there's a header file naming difference between different
-# implementations; so OpenFace wants OpenBLAS;
-set(BLA_VENDOR OpenBLAS)
-find_package(BLAS REQUIRED)
-if ( ${BLAS_FOUND} )
-    MESSAGE("BLAS information:")
-    MESSAGE("  BLAS_LIBRARIES: ${BLAS_LIBRARIES}")
+# implementations; so OpenFace wants OpenBLAS
+# directly search for OpenBLAS first - this needs to be done when using conda on linux
+find_package(OpenBLAS CONFIG)
+if (${OpenBLAS_FOUND} AND OpenBLAS_LIBRARIES)
+    MESSAGE("OpenBLAS information:")
 else()
-    MESSAGE(FATAL_ERROR "OpenBLAS not found in the system.")
+    # try general approach next
+    set(BLA_VENDOR OpenBLAS)
+    find_package(BLAS MODULE)
+    if (${BLAS_FOUND})
+        MESSAGE("BLAS information:")
+        set(OpenBLAS_FOUND ${BLAS_FOUND})
+        set(OpenBLAS_LIBRARIES ${BLAS_LIBRARIES})
+        if (NOT OpenBLAS_INCLUDE_DIRS AND BLAS_INCLUDE_DIR)
+            set(OpenBLAS_INCLUDE_DIRS ${BLAS_INCLUDE_DIR})
+        endif()
+    else()
+        MESSAGE(FATAL_ERROR "OpenBLAS not found in the system.")
+    endif()
 endif()
-# FindBLAS does not look for include so use the one vended with OpenFace
-set(BLAS_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/lib/3rdParty/OpenBLAS/include")
-MESSAGE("  BLAS_INCLUDE: ${BLAS_INCLUDE_DIR}")
+# in case include was not found use the one vended with OpenFace
+if (NOT OpenBLAS_INCLUDE_DIRS)
+    set(OpenBLAS_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/lib/3rdParty/OpenBLAS/include")
+endif()
+MESSAGE("  OpenBLAS_LIBRARIES: ${OpenBLAS_LIBRARIES}")
+MESSAGE("  OpenBLAS_INCLUDE_DIRS: ${OpenBLAS_INCLUDE_DIRS}")
 
 find_package( OpenCV 4.0 REQUIRED COMPONENTS core imgproc calib3d highgui objdetect)
 if(${OpenCV_FOUND})

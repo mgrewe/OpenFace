@@ -37,7 +37,7 @@ target_include_directories(FaceAnalyser PUBLIC
 target_include_directories(FaceAnalyser PRIVATE ${FACEANALYSER_SOURCE_DIR}/include)
 target_include_directories(FaceAnalyser PUBLIC ${OpenCV_INCLUDE_DIRS})
 
-target_link_libraries(FaceAnalyser PUBLIC ${OpenCV_LIBS} ${BLAS_LIBRARIES})
+target_link_libraries(FaceAnalyser PUBLIC ${OpenCV_LIBS} ${OpenBLAS_LIBRARIES})
 target_link_libraries(FaceAnalyser PUBLIC dlib::dlib)
 
 if(${Boost_FOUND})
@@ -47,7 +47,7 @@ else()
 	target_compile_features(FaceAnalyser PUBLIC cxx_std_17)
 endif()
 
-target_include_directories(FaceAnalyser PRIVATE ${BLAS_INCLUDE_DIR})
+target_include_directories(FaceAnalyser PRIVATE ${OpenBLAS_INCLUDE_DIRS})
 
 install (TARGETS FaceAnalyser EXPORT OpenFaceTargets LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 install (FILES ${HEADERS} DESTINATION include/OpenFace)
