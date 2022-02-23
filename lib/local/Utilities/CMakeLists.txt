@@ -40,7 +40,7 @@ if(${Boost_FOUND})
 	target_include_directories(Utilities PUBLIC ${Boost_INCLUDE_DIRS})
 	target_link_libraries(Utilities PUBLIC ${Boost_LIBRARIES})
 else()
-	target_link_libraries(Utilities PUBLIC stdc++fs)
+	target_compile_features(Utilities PUBLIC cxx_std_17)
 endif()
 
 install (TARGETS Utilities EXPORT OpenFaceTargets LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
